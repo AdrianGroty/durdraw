@@ -15,14 +15,19 @@ import importlib.util
 class DurPlugin:
     def __init__(self):
         #self.plugin_dirs = ["./plugins", "~/.durdraw/plugins"]
-        internal_plugins_path = pathlib.Path(__file__).parent.joinpath("plugins/")
-        self.plugin_dirs = [internal_plugins_path, "~/.durdraw/plugins"]
+        self.internal_plugins_path = pathlib.Path(__file__).parent.joinpath("plugins/")
+        self.plugin_dirs = [self.internal_plugins_path, "~/.durdraw/plugins"]
         self.loaded_plugins = self.load_plugins(self.plugin_dirs)
 
     def load_plugins(self, directories):
         plugins = {}
 
+        internal_plugin = False  # assume unles otherwise specified
         for directory in directories:
+            if directory == self.internal_plugins_path:
+                internal_plugin = True
+            else:
+                internal_plugin = False
             directory = os.path.expanduser(directory)
             if os.path.isdir(directory) and os.access(directory, os.R_OK):
                 # List all .py files in the directory
@@ -50,7 +55,14 @@ class DurPlugin:
                                 }
                                 # Copy in optional module paramaters (opts dict)
                                 if hasattr(module, 'opts') and isinstance(module.opts, dict):
-                                    plugins[module_name]["opts"] = module['opts']
+                                    plugins[module_name]["opts"] = module.opts
+                                # Tag internal plugins so they appear in correct menu
+                                if internal_plugin:
+                                    plugins[module_name]["meta"]["internal"] = True
+                                    #pdb.set_trace()
+                                else:
+                                    plugins[module_name]["meta"]["internal"] = False
+                                    
             else:
                 print(f"Could not read path: {directory}")
                 print(f"isdir: {os.path.isdir(directory)},  access: {os.access(directory, os.R_OK)}")

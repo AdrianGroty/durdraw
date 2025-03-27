@@ -16,7 +16,7 @@ durdraw_plugin = {
     "desc": "Duplicate all frames and reverse them, then append them to the end. |> -> |><|"
 }
 
-def transform_movie(mov):
+def transform_movie(mov, appState=None):
     # Make a copy of the frames
     newframes = copy.deepcopy(mov.frames)
     # Remove the last frame, otherwise it will be shown 2 times in a row after transform

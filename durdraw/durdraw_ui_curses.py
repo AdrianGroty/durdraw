@@ -172,11 +172,12 @@ class UserInterface():  # Separate view (curses) from this controller
 
     def init_plugins(self):
         self.plugin_system = durplug.DurPlugin()
+        # Init user plugins
         plugin_number = 1
         found_plugins = False
         for plugin_name, plugin in self.plugin_system.loaded_plugins.items():
-            found_plugins = True
-            if 'transform_movie' in plugin["meta"]["provides"]:
+            if 'transform_movie' in plugin["meta"]["provides"] and not plugin["meta"]["internal"]:
+                found_plugins = True
                 if plugin_number < 10:
                     self.statusBar.animPluginsMenu.add_item(
                         str(plugin_number) + " " + plugin["meta"]["name"],
@@ -192,7 +193,30 @@ class UserInterface():  # Separate view (curses) from this controller
                     plugin_number += 1
             if found_plugins:
                 self.statusBar.animMenu.add_item("Plugins", self.openAnimPluginsMenu, "p", has_submenu=True)
-            self.statusBar.animPluginsMenu.handler.rebuild()
+                self.statusBar.animPluginsMenu.handler.rebuild()
+        # Init internal plugins
+        plugin_number = 1
+        found_plugins = False
+        for plugin_name, plugin in self.plugin_system.loaded_plugins.items():
+            if 'transform_movie' in plugin["meta"]["provides"] and plugin["meta"]["internal"]:
+                found_plugins = True
+                if plugin_number < 10:
+                    self.statusBar.transformMenu.add_item(
+                        str(plugin_number) + " " + plugin["meta"]["name"],
+                        #lambda: self.plugin_system.run_plugin_transform_mov(plugin_name, self.mov, ui=self),
+                        lambda pn=plugin_name: self.plugin_system.run_plugin_transform_mov(pn, self.mov, ui=self),
+                        str(plugin_number))
+                    plugin_number += 1
+                else:
+                    self.statusBar.transformMenu.add_item(plugin["meta"]["name"], \
+                        #lambda: self.plugin_system.run_plugin_transform_mov(plugin_name, self.mov, ui=self),
+                        lambda pn=plugin_name: self.plugin_system.run_plugin_transform_mov(pn, self.mov, ui=self),
+                        "")
+                    plugin_number += 1
+        try:
+            self.statusBar.transformMenu.handler.rebuild()
+        except ValueError:
+            pdb.set_trace()
 
     def init_256_colors_misc(self):
         self.appState.theme = self.appState.theme_256
