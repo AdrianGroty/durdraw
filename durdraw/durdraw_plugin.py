@@ -9,12 +9,14 @@
 # plugin_list = { }
 
 import os
+import pathlib
 import importlib.util
 
 class DurPlugin:
     def __init__(self):
         #self.plugin_dirs = ["./plugins", "~/.durdraw/plugins"]
-        self.plugin_dirs = ["~/.durdraw/plugins"]
+        internal_plugins_path = pathlib.Path(__file__).parent.joinpath("plugins/")
+        self.plugin_dirs = [internal_plugins_path, "~/.durdraw/plugins"]
         self.loaded_plugins = self.load_plugins(self.plugin_dirs)
 
     def load_plugins(self, directories):
@@ -24,7 +26,9 @@ class DurPlugin:
             directory = os.path.expanduser(directory)
             if os.path.isdir(directory) and os.access(directory, os.R_OK):
                 # List all .py files in the directory
-                for filename in os.listdir(directory):
+                files = os.listdir(directory)
+                files.sort()
+                for filename in files:
                     if filename.endswith(".py"):
                         file_path = os.path.join(directory, filename)
                         module_name = filename[:-3]  # Strip '.py' from the filename
@@ -41,8 +45,12 @@ class DurPlugin:
                                     "meta": module.durdraw_plugin,
                                     "module": module,  # Store the module for execution
                                     "path": file_path,   # path to .py file for dynamic reloading
-                                    "module_name": module_name
+                                    "module_name": module_name,
+                                    "opts": None,
                                 }
+                                # Copy in optional module paramaters (opts dict)
+                                if hasattr(module, 'opts') and isinstance(module.opts, dict):
+                                    plugins[module_name]["opts"] = module['opts']
             else:
                 print(f"Could not read path: {directory}")
                 print(f"isdir: {os.path.isdir(directory)},  access: {os.access(directory, os.R_OK)}")
