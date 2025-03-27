@@ -11,6 +11,7 @@
 import os
 import pathlib
 import importlib.util
+import pdb
 
 class DurPlugin:
     def __init__(self):
@@ -56,6 +57,7 @@ class DurPlugin:
                                 # Copy in optional module paramaters (opts dict)
                                 if hasattr(module, 'opts') and isinstance(module.opts, dict):
                                     plugins[module_name]["opts"] = module.opts
+                                    #pdb.set_trace()
                                 # Tag internal plugins so they appear in correct menu
                                 if internal_plugin:
                                     plugins[module_name]["meta"]["internal"] = True
@@ -82,6 +84,19 @@ class DurPlugin:
         if plugin_name in self.loaded_plugins:
             self.reload_plugin(plugin_name)
             plugin = self.loaded_plugins[plugin_name]
+
+            #pdb.set_trace()
+
+            # If there are optional paramaters, get them from the user.
+            if ui:
+                try:
+                    opts = ui.pluginOptionsPrompt(plugin['module'].opts)
+                    plugin['module'].opts = opts
+                except:
+                    pass
+                #if "opts" in plugin['module']:
+                #    plugin['module']["opts"] = opts
+
             if "transform_movie" in plugin["meta"]["provides"]:
                 if ui:
                     ui.undo.push()

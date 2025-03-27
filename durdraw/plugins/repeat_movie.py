@@ -18,7 +18,7 @@ durdraw_plugin = {
 }
 
 opts = {
-    'count': 1
+    'count': 1,
 }
 
 def transform_movie(mov, appState=None, opts=opts):

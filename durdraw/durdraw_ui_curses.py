@@ -218,6 +218,69 @@ class UserInterface():  # Separate view (curses) from this controller
         except ValueError:
             pdb.set_trace()
 
+    def pluginOptionsPrompt(self, opts):
+        """ takes opts, a dict containing "key": value, pairs. Key is what the
+            user should be prompted for, value is a default value.
+            Ask th euser to fill out the values. Returns a new dict with 
+            any changed values. """
+        self.clearStatusLine()
+        self.move(self.mov.sizeY, 0)
+        self.stdscr.nodelay(0) # wait for input when calling getch
+        for item in opts:
+            # valid option types are probably 'int' 'float' and 'str':
+            inputType = type(opts[item]).__name__
+            validInputTypes = ['int', 'float', 'str']
+            if inputType in validInputTypes:
+                validInput = False
+                while validInput == False:
+                    self.clearStatusLine()
+                    self.promptPrint(f"Plugin option {inputType}: {item} [{opts[item]}] ")
+                    curses.echo()
+                    result = self.stdscr.getstr()
+                    if result.strip() == b'':
+                        # leave default - use presesd enter.
+                        validInput = True
+                        pass
+                    # If plugin template expects a float, see if it's a float.
+                    elif inputType == 'float':
+                        try:
+                            result = float(result)
+                            opts[item] = result
+                            validInput = True
+                        except ValueError:
+                            self.clearStatusLine()
+                            resultType = type(result).__name__
+                            self.notify(f"Error: exepcted {inputType}, got {resultType}.")
+                    elif inputType == 'int':
+                        try:
+                            result = int(result)
+                            opts[item] = result
+                            validInput = True
+                        except ValueError:
+                            self.clearStatusLine()
+                            resultType = type(result).__name__
+                            self.notify(f"Error: exepcted {inputType}, got {resultType}.")
+                            pdb.set_trace()
+                    elif inputType == 'str':
+                        if result.strip() == '':
+                            # blank, so go default
+                            validInput = True
+                        else:
+                            # If plugin is expecting a string, just pass it in.
+                            opts[item] = str(result)
+                            validInput = True
+                    else:
+                        self.clearStatusLine()
+                        self.notify(f"Plugin Error: {item} is {inputType}, but must be int, float or string. Canceled!")
+                        curses.noecho()
+                        return None
+        curses.noecho()
+        if self.playing:
+            self.stdscr.nodelay(1) # don't wait for input when calling getch
+        return opts
+
+
+
     def init_256_colors_misc(self):
         self.appState.theme = self.appState.theme_256
         self.appState.loadThemeFromConfig('Theme-256')
