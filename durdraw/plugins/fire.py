@@ -18,19 +18,29 @@ durdraw_plugin = {
     "desc": "Renders steady fire effects over non-space chars"
 }
 
+
+opts = {
+    # Animation settings
+    "steps": 10,    # number of frames to generate
+    "intensity": 0.6,  # More frequent for bonfire
+    "spot heat": 16,   # Higher heat for taller flames
+}
+
+
 # Color palette (256-mode, reds to yellow)
 _COLOURS_256 = [235, 52, 88, 124, 160, 196, 202, 208, 214, 220, 226]
 
-def transform_movie(mov, appState=None):
+def transform_movie(mov, appState=None, opts=opts):
     """Renders steady fire effects under/around non-space chars, replacing frame for looping."""
     current_idx = mov.currentFrameNumber - 1  # 1-based UI to 0-based index
     orig_frame = deepcopy(mov.frames[current_idx])  # Frame to base fire on
     new_frames = []  # Frames to insert
-    
+   
     # Animation settings
-    steps = 30
-    intensity = 0.6
-    spot_heat = 16  # Tiny, steady flames
+    steps = opts["steps"]
+    intensity = opts["intensity"]
+    spot_heat = opts["spot heat"]
+
     colour_mode = appState.colorMode if appState else "16"
     colours = _COLOURS_256 if colour_mode == "256" else [0, 1, 9]
     

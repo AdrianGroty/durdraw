@@ -17,15 +17,23 @@ durdraw_plugin = {
     "provides": ["transform_movie"],
     "desc": "Melts filled characters downward into a puddle like dripping oatmeal."
 }
+opts = {
+    # Animation settings
+    "steps": 30,    # number of frames to generate
+    "drip_min": 0.5,    # minimum drip speed
+    "drip_max": 1.5,    # max drip speed
+}
 
-def transform_movie(mov, appState=None):
+def transform_movie(mov, appState=None, opts=opts):
     """Melts filled chars downward unevenly, piling into a puddle over 30 frames."""
     orig_frame = deepcopy(mov.frames[0])  # Frame to melt
     mov.frames = []  # Clear for new frames
     mov.frameCount = 0
     
     # Animation settings
-    steps = 30  # Frames for full melt
+    steps = opts['steps']
+    drip_min = opts['drip_min']
+    drip_max = opts['drip_max']
     
     # Track positions: (x, y) -> (char, color)
     positions = {}  # Current positions of melting chars
@@ -38,7 +46,7 @@ def transform_movie(mov, appState=None):
                 positions[(x, y)] = [orig_frame.content[y][x], orig_frame.newColorMap[y][x]]
     
     # Drip speeds per column (water-like variation)
-    drip_rates = [random.uniform(0.5, 1.5) for _ in range(mov.sizeX)]  # Faster/slower columns
+    drip_rates = [random.uniform(drip_min, drip_max) for _ in range(mov.sizeX)]  # Faster/slower columns
     
     for step in range(steps):
         frame = Frame(mov.sizeX, mov.sizeY)

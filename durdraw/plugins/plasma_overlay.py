@@ -16,14 +16,20 @@ durdraw_plugin = {
     "desc": "Overlays a swirling plasma color effect on existing frames."
 }
 
-def transform_movie(mov, appState=None):
+opts = {
+    'max color': 255,
+}
+
+
+def transform_movie(mov, appState=None, opts = opts):
     """Applies a plasma color effect to existing frames, preserving original characters."""
     # Use existing frame count
     steps = mov.frameCount
     
     # Color setup
     color_mode = appState.colorMode if appState else "16"
-    max_color = 255 if color_mode == "256" else 15  # Full palette range
+    #max_color = 255 if color_mode == "256" else 15  # Full palette range
+    max_color = opts['max color'] if color_mode == "256" else 15  # Full palette range
     
     for step in range(steps):
         frame = mov.frames[step]  # Work with existing frame

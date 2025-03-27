@@ -11,24 +11,32 @@ durdraw_plugin_version = 1
 
 # Plugin information
 durdraw_plugin = {
-    "name": "Sine Wave 3",
+    "name": "Sine Wave (rising and falling)",
     "author": "Grok (with Sam Foster’s blessing)",
     "version": 1,
     "provides": ["transform_movie"],
     "desc": "Oscillates characters horizontally with multiple sine waves, amplitude swelling and fading."
 }
 
-def transform_movie(mov, appState=None):
+opts = {
+    # Animation settings
+    "min amplitude": 0.5,   # Starting subtle shift
+    "max amplitude": 5.0,   # Peak shift in chars
+    "cycles": 10,         # Number of oscillation cycles  
+    "steps per cycle": 10, # Frames per cycle (smooth wave) 
+}
+
+def transform_movie(mov, appState=None, opts=opts):
     """Shifts chars left/right with 10 sine wave cycles, amplitude ramps 0.5 to 5 and back."""
     orig_frames = deepcopy(mov.frames)  # Save original frames
     mov.frames = []  # Clear for new frames
     mov.frameCount = 0
     
     # Animation settings
-    max_amplitude = 5    # Peak shift in chars
-    min_amplitude = 0.5  # Starting subtle shift
-    cycles = 10          # Number of oscillation cycles
-    steps_per_cycle = 10 # Frames per cycle (smooth wave)
+    max_amplitude = opts['max amplitude']
+    min_amplitude = opts['min amplitude']
+    cycles = opts['cycles']
+    steps_per_cycle = opts['steps per cycle']
     total_steps = cycles * steps_per_cycle  # Total frames
     
     for step in range(total_steps):

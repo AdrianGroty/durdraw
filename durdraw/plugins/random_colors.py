@@ -17,7 +17,12 @@ durdraw_plugin = {
     "desc": "Fill canvas with random colors."
 }
 
-def transform_movie(mov, appState=None):
+opts = {
+    'min color': 1,
+    'max color': 255,
+}
+
+def transform_movie(mov, appState=None, opts=opts):
     frame_num = 0
     for frame in mov.frames:
         mov.frames[frame_num] = transform_frame(frame, appState=appState)
@@ -27,8 +32,8 @@ def transform_movie(mov, appState=None):
 def transform_frame(frame, appState=None):
     # fill canvas with random colors.
     if appState.colorMode == "256":
-        min_color = 1
-        max_color = 255
+        min_color = opts['min color']
+        max_color = opts['max color']
         bg_color = 0
     else:
         min_color = 1

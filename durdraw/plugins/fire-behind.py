@@ -18,10 +18,17 @@ durdraw_plugin = {
     "desc": "Renders bonfire-like effects surrounding non-space chars, with originals on top."
 }
 
+opts = {
+    # Animation settings
+    "steps": 30,    # number of frames to generate
+    "intensity": 0.7,  # More frequent for bonfire
+    "spot heat": 16,   # Higher heat for taller flames
+}
+
 # Color palette (256-mode, dark grey to yellow)
 _COLOURS_256 = [232, 52, 88, 124, 160, 196, 202, 208, 214, 220, 226]  # 232 = dark grey
 
-def transform_movie(mov, appState=None):
+def transform_movie(mov, appState=None, opts=opts):
     """Renders bonfire-like effects surrounding non-space chars, originals on top."""
     if not mov or not hasattr(mov, 'frames'):  # Safety check
         return mov
@@ -31,9 +38,9 @@ def transform_movie(mov, appState=None):
     new_frames = []  # Frames to insert
     
     # Animation settings
-    steps = 30
-    intensity = 0.7  # More frequent for bonfire
-    spot_heat = 16   # Higher heat for taller flames
+    steps = opts["steps"]
+    intensity = opts["intensity"]
+    spot_heat = opts["spot heat"]
     colour_mode = appState.colorMode if appState else "16"
     colours = _COLOURS_256 if colour_mode == "256" else [8, 1, 9]  # Dark grey, red, yellow
     

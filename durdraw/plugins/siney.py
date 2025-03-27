@@ -11,22 +11,29 @@ durdraw_plugin_version = 1
 
 # Plugin information
 durdraw_plugin = {
-    "name": "Sine Wave",
+    "name": "Sine Wave (constant)",
     "author": "Grok (with Sam Foster’s blessing)",
     "version": 1,
     "provides": ["transform_movie"],
     "desc": "Oscillates characters horizontally with a sine wave over existing frames."
 }
 
-def transform_movie(mov, appState=None):
+opts = {
+    # Animation settings
+    "steps": 20,   # Frames for one full wave cycle
+    "amplitude": 5,   # Max shift in chars
+}
+
+
+def transform_movie(mov, appState=None, opts=opts):
     """Shifts chars left/right with a sine wave, preserving original content and colors."""
     orig_frames = deepcopy(mov.frames)  # Save original frames
     mov.frames = []  # Clear for new frames
     mov.frameCount = 0
     
     # Animation settings
-    amplitude = 5  # Max shift in chars (tweakable)
-    period = 20    # Frames for one full wave cycle (tweakable)
+    amplitude = opts['amplitude']  # Max shift in chars (tweakable)
+    period = opts['steps']    
     steps = period  # Total frames in the loop
     
     for step in range(steps):
