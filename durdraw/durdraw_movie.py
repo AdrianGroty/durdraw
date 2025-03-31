@@ -376,6 +376,10 @@ class Movie():
                         pair[0] = 2
                     elif pair[0] == 2:    # blue
                         pair[0] = 1
+                    # eliminate all BG colors for now. 0 = black in 256 color mode.
+                    # bg 8 = black in 16 color mode. We do this because things get
+                    # weird in 256 color mode with non-0 BG colors.
+                    pair[1] = 0         
                     col_num += 1
 
     def change_palette_256_to_16(self):
