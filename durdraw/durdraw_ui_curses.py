@@ -7148,14 +7148,17 @@ Can use ESC or META instead of ALT
         transparent = True
         while prompting:
             prompt_ch = self.stdscr.getch()
-            if chr(prompt_ch) in ['y', 'Y']:
-                frange=self.appState.playbackRange
-                prompting = False
-            if chr(prompt_ch) in ['n', 'N']:
-                transparent = False
-                prompting = False
-            elif prompt_ch == 27:  # esc, cancel
-                return False
+            try:
+                if chr(prompt_ch) in ['y', 'Y']:
+                    frange=self.appState.playbackRange
+                    prompting = False
+                if chr(prompt_ch) in ['n', 'N']:
+                    transparent = False
+                    prompting = False
+                elif prompt_ch == 27:  # esc, cancel
+                    return False
+            except ValueError:
+                pass    # dgaf crash prevention on weird inputs
 
         self.undo.push()
         self.pasteFromClipboard(frange=frange, transparent=transparent)
