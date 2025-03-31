@@ -424,12 +424,14 @@ class StatusBar():
         #settingsMenuColumn = mainMenu.handler.width # Try to place to the right of the main menu
         settingsMenuColumn = 22 # Try to place to the right of the main menu
         settingsMenu = Menu(self.window, x = self.x - 2, y = settingsMenuColumn, caller=self, appState=self.appState, statusBar=self)
+        settingsMenu.set_title("Settings:")
         settingsMenu.add_item("16 Color Mode", caller.switchTo16ColorMode, "1")
         settingsMenu.add_item("256 Color Mode", caller.switchTo256ColorMode, "2")
         settingsMenu.add_item("VGA Colors", caller.enableTrueVGAColors, "v")
         settingsMenu.add_item("ZX Spectrum Colors", caller.enableTrueSpeccyColors, "z")
         settingsMenu.add_item("C64 Colors", caller.enableTrueC64Colors, "c")
         #settingsMenu.add_item("Deafult Colors", caller.resetColorsToDefault, "d")
+        settingsMenu.add_item("Cursor Style", caller.openCursorMenu, "r", has_submenu=True)
         settingsMenu.add_item("Toggle Mouse", caller.toggleMouse, "m")
         settingsMenu.add_item("Toggle Color Scroll", caller.toggleColorScrolling, "s")
         settingsMenu.add_item("Toggle Wide Wrapping", caller.toggleWideWrapping, "w")
@@ -444,6 +446,20 @@ class StatusBar():
         settingsMenu.set_x(self.x - 1)
         settingsMenu.set_y(settingsMenuColumn)
         self.settingsMenu = settingsMenu
+
+
+        cursorMenuColumn = 45 # Try to place to the right of the main menu
+        cursorMenu = Menu(self.window, x = self.x - 2, y = cursorMenuColumn, caller=self, appState=self.appState, statusBar=self)
+        cursorMenu.set_title("Cursor:")
+        cursorMenu.add_item("Block", caller.setCursorStyleBlock, "b")
+        cursorMenu.add_item("Pipe", caller.setCursorStylePipe, "p")
+        cursorMenu.add_item("Underscore", caller.setCursorStyleUnderscore, "u")
+        cursorMenu.is_submenu = True
+        #cursorMenu.add_item("Show/Hide Sidebar", caller.toggleSideBar, "s")
+        cursorMenu.set_x(self.x - 1)
+        cursorMenu.set_y(cursorMenuColumn)
+        self.cursorMenu = cursorMenu
+
 
         # Transforms menu
         #transformMenuColumn = 24 # Try to place to the right of the main menu

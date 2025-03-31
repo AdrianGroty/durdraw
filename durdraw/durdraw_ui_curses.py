@@ -358,6 +358,18 @@ class UserInterface():  # Separate view (curses) from this controller
             sys.stdout.write(f"\x1b[5 q")
         sys.stdout.write("\n")
 
+    def setCursorStyleBlock(self):
+        self.appState.screenCursorMode = "block"
+        self.initCursorMode()
+
+    def setCursorStylePipe(self):
+        self.appState.screenCursorMode = "pipe"
+        self.initCursorMode()
+
+    def setCursorStyleUnderscore(self):
+        self.appState.screenCursorMode = "underscore"
+        self.initCursorMode()
+
     def enableMouseReporting(self):
         # Use xterm API to report location of mouse cursor
         print('\033[?1003h') # enable mouse tracking with the XTERM API
@@ -3899,6 +3911,12 @@ class UserInterface():  # Separate view (curses) from this controller
             pass
         else:
             self.statusBar.animMenu.handler.panel.hide()
+
+    def openCursorMenu(self):
+        """ Show the status bar's menu for settings """
+        self.statusBar.settingsMenu.handler.panel.show()
+        response = self.statusBar.cursorMenu.showHide()
+        self.statusBar.settingsMenu.handler.panel.hide()
 
     def openSettingsMenu(self):
         """ Show the status bar's menu for settings """
