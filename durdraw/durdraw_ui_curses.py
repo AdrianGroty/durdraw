@@ -1029,6 +1029,7 @@ class UserInterface():  # Separate view (curses) from this controller
             self.clearStatusLine()
         if clearing:
             #self.undo.push() # so we can undo this operation
+            self.opts = Options()   # re-initialize canvas size, fps, etc.
             self.mov = Movie(self.opts) # initialize a new movie
             self.setPlaybackRange(1, self.mov.frameCount)
             self.undo = UndoManager(self, appState = self.appState) # reset undo system
