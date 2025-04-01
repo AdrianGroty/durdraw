@@ -1,3 +1,3 @@
 set -x
-pipx upgrade .
+pipx install --force .
 
