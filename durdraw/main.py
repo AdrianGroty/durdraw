@@ -89,10 +89,10 @@ def main(fetch_args=None):
     if args.undosize: 
         app.undoHistorySize = int(args.undosize[0])
     #if args.width and args.width[0] > 80 and args.width[0] < term_size[0]:
-    if args.width and args.width[0] > 1 and args.width[0] < term_size[0]:
+    if args.width and args.width[0] > 1:
         app.width = args.width[0]
     #if args.height and args.height[0] > 24 and args.height[0] < term_size[1]:
-    if args.height and args.height[0] > 1 and args.height[0] < term_size[1]:
+    if args.height and args.height[0] > 1:
         app.height = args.height[0]
     if args.max:
         app.maximize_canvas()
